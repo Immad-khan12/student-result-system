@@ -1,0 +1,400 @@
+{% extends 'results/base.html' %}
+{% block content %}
+
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0a1a !important; color: white !important; }
+
+.hero {
+    min-height: 100vh;
+    background: radial-gradient(ellipse at 20% 50%, #0d1b4b 0%, #0a0a1a 60%);
+    display: flex; align-items: center;
+    position: relative; overflow: hidden;
+    padding: 100px 0 60px;
+}
+.hero::before {
+    content: '';
+    position: absolute;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(79,172,254,0.12) 0%, transparent 70%);
+    top: -100px; right: -50px; border-radius: 50%;
+    animation: glow 5s ease-in-out infinite;
+}
+.hero::after {
+    content: '';
+    position: absolute;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(0,242,254,0.08) 0%, transparent 70%);
+    bottom: 0; left: 10%; border-radius: 50%;
+    animation: glow 7s ease-in-out infinite reverse;
+}
+@keyframes glow {
+    0%,100% { transform: scale(1); opacity: 0.6; }
+    50% { transform: scale(1.3); opacity: 1; }
+}
+
+.badge-pill {
+    display: inline-block;
+    background: rgba(79,172,254,0.12);
+    border: 1px solid rgba(79,172,254,0.35);
+    color: #4facfe; padding: 6px 20px;
+    border-radius: 50px; font-size: 0.82rem;
+    margin-bottom: 22px; letter-spacing: 1px;
+    animation: fadeDown 0.8s ease both;
+}
+.hero h1 {
+    font-size: 3.2rem; font-weight: 700;
+    line-height: 1.2; margin-bottom: 18px;
+    animation: fadeUp 0.8s ease 0.2s both;
+}
+.hero h1 .grad {
+    background: linear-gradient(90deg, #4facfe, #00f2fe);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.hero p {
+    color: rgba(255,255,255,0.55); font-size: 1.05rem;
+    margin-bottom: 35px; line-height: 1.7;
+    animation: fadeUp 0.8s ease 0.4s both;
+}
+.hero-btns { animation: fadeUp 0.8s ease 0.6s both; display: flex; gap: 15px; flex-wrap: wrap; }
+
+.btn-glow {
+    background: linear-gradient(135deg, #4facfe, #00f2fe);
+    border: none; padding: 13px 32px;
+    border-radius: 50px; font-weight: 600;
+    color: #0a0a1a; text-decoration: none;
+    box-shadow: 0 8px 25px rgba(79,172,254,0.4);
+    transition: 0.3s; font-size: 0.95rem;
+}
+.btn-glow:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px rgba(79,172,254,0.6);
+    color: #0a0a1a;
+}
+.btn-ghost {
+    background: transparent;
+    border: 2px solid rgba(79,172,254,0.4);
+    padding: 11px 32px; border-radius: 50px;
+    font-weight: 600; color: #4facfe;
+    text-decoration: none; transition: 0.3s;
+    font-size: 0.95rem;
+}
+.btn-ghost:hover {
+    background: rgba(79,172,254,0.1);
+    border-color: #4facfe;
+    transform: translateY(-3px); color: #4facfe;
+}
+
+/* FLOATING CARD */
+.float-card {
+    background: rgba(255,255,255,0.04);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(79,172,254,0.18);
+    border-radius: 24px; padding: 28px;
+    animation: floatAnim 6s ease-in-out infinite;
+    position: relative; z-index: 2;
+}
+@keyframes floatAnim {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-18px); }
+}
+.stat-box {
+    background: rgba(79,172,254,0.06);
+    border: 1px solid rgba(79,172,254,0.15);
+    border-radius: 16px; padding: 18px 10px;
+    text-align: center; transition: 0.3s;
+}
+.stat-box:hover {
+    background: rgba(79,172,254,0.14);
+    transform: scale(1.06);
+    border-color: rgba(79,172,254,0.4);
+}
+.stat-num {
+    font-size: 2.2rem; font-weight: 700;
+    background: linear-gradient(90deg, #4facfe, #00f2fe);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.stat-lbl { color: rgba(255,255,255,0.5); font-size: 0.82rem; margin-top: 4px; }
+.card-label {
+    color: rgba(255,255,255,0.35);
+    font-size: 0.72rem; text-transform: uppercase;
+    letter-spacing: 2px; margin-bottom: 16px;
+}
+.tech-tag {
+    background: rgba(79,172,254,0.1);
+    border: 1px solid rgba(79,172,254,0.25);
+    color: #4facfe; padding: 4px 14px;
+    border-radius: 50px; font-size: 0.72rem;
+    display: inline-block; margin: 3px;
+}
+
+/* STATS BAR */
+.stats-bar {
+    background: rgba(255,255,255,0.02);
+    border-top: 1px solid rgba(79,172,254,0.1);
+    border-bottom: 1px solid rgba(79,172,254,0.1);
+    padding: 30px 0;
+}
+.stats-bar .num {
+    font-size: 2rem; font-weight: 700;
+    background: linear-gradient(90deg, #4facfe, #00f2fe);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.stats-bar .lbl { color: rgba(255,255,255,0.4); font-size: 0.85rem; }
+
+/* FEATURES */
+.features { padding: 90px 0; background: #0d0d22; }
+.sec-title { font-size: 2rem; font-weight: 700; }
+.sec-title .grad {
+    background: linear-gradient(90deg, #4facfe, #00f2fe);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.sec-sub { color: rgba(255,255,255,0.45); margin-bottom: 50px; }
+
+.feat-card {
+    background: rgba(255,255,255,0.025);
+    border: 1px solid rgba(79,172,254,0.12);
+    border-radius: 20px; padding: 30px;
+    height: 100%; transition: 0.4s; position: relative; overflow: hidden;
+}
+.feat-card::after {
+    content: '';
+    position: absolute; top: 0; left: 0;
+    width: 100%; height: 2px;
+    background: linear-gradient(90deg, #4facfe, #00f2fe);
+    transform: scaleX(0); transition: 0.4s;
+}
+.feat-card:hover::after { transform: scaleX(1); }
+.feat-card:hover {
+    transform: translateY(-10px);
+    border-color: rgba(79,172,254,0.35);
+    box-shadow: 0 25px 60px rgba(79,172,254,0.12);
+    background: rgba(79,172,254,0.04);
+}
+.feat-icon { font-size: 2.2rem; margin-bottom: 15px; display: block; }
+.feat-card h5 { font-weight: 600; margin-bottom: 10px; color: white; }
+.feat-card p { color: rgba(255,255,255,0.45); font-size: 0.88rem; line-height: 1.6; }
+
+/* ACTIONS */
+.actions { padding: 90px 0; background: #0a0a1a; }
+.act-card {
+    background: rgba(255,255,255,0.025);
+    border: 1px solid rgba(79,172,254,0.12);
+    border-radius: 20px; padding: 35px 25px;
+    text-align: center; transition: 0.4s;
+    text-decoration: none; display: block; color: white;
+}
+.act-card:hover {
+    transform: translateY(-10px) scale(1.03);
+    border-color: #4facfe;
+    box-shadow: 0 25px 60px rgba(79,172,254,0.18);
+    color: white;
+    background: rgba(79,172,254,0.06);
+}
+.act-icon { font-size: 2.8rem; margin-bottom: 15px; display: block; }
+.act-card h5 { font-weight: 600; margin-bottom: 8px; font-size: 1rem; }
+.act-card p { color: rgba(255,255,255,0.4); font-size: 0.82rem; margin: 0; }
+
+/* FOOTER */
+.footer {
+    background: rgba(0,0,0,0.6);
+    border-top: 1px solid rgba(79,172,254,0.1);
+    padding: 28px 0; text-align: center;
+    color: rgba(255,255,255,0.35); font-size: 0.88rem;
+}
+.footer .grad {
+    background: linear-gradient(90deg, #4facfe, #00f2fe);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    font-weight: 600;
+}
+
+/* NAVBAR OVERRIDE */
+.navbar { background: rgba(10,10,26,0.95) !important; border-bottom: 1px solid rgba(79,172,254,0.15) !important; }
+.navbar-brand {
+    background: linear-gradient(90deg, #4facfe, #00f2fe);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    font-weight: 700 !important;
+}
+.nav-link { color: rgba(255,255,255,0.7) !important; transition: 0.3s !important; }
+.nav-link:hover { color: #4facfe !important; }
+
+@keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(25px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* PARTICLES */
+.particle {
+    position: fixed; border-radius: 50%;
+    background: #4facfe; opacity: 0.25;
+    animation: rise linear infinite; pointer-events: none;
+}
+@keyframes rise {
+    0% { transform: translateY(100vh); opacity: 0; }
+    10% { opacity: 0.25; }
+    90% { opacity: 0.25; }
+    100% { transform: translateY(-10vh); opacity: 0; }
+}
+</style>
+
+<!-- PARTICLES -->
+<div id="particles"></div>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6">
+                <div class="badge-pill">🚀 Django + Python Full Stack Project</div>
+                <h1>Smart <span class="grad">Student Result</span> Management System</h1>
+                <p>A full-stack web application to manage student records, subjects, and academic results — built with Python, Django, and a modern responsive interface.</p>
+                <div class="hero-btns">
+                    <a href="{% url 'student_list' %}" class="btn-glow">View Students</a>
+                    <a href="{% url 'add_student' %}" class="btn-ghost">+ Add Student</a>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="float-card">
+                    <div class="card-label">📊 Live Statistics</div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-4">
+                            <div class="stat-box">
+                                <div class="stat-num">{{ total_students }}</div>
+                                <div class="stat-lbl">Students</div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="stat-box">
+                                <div class="stat-num">{{ total_subjects }}</div>
+                                <div class="stat-lbl">Subjects</div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="stat-box">
+                                <div class="stat-num">{{ total_results }}</div>
+                                <div class="stat-lbl">Results</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="padding:14px; background:rgba(79,172,254,0.06); border-radius:14px; border:1px solid rgba(79,172,254,0.12);">
+                        <div class="card-label" style="margin-bottom:10px;">⚙️ Tech Stack</div>
+                        <div>
+                            <span class="tech-tag">Python</span>
+                            <span class="tech-tag">Django</span>
+                            <span class="tech-tag">HTML5</span>
+                            <span class="tech-tag">CSS3</span>
+                            <span class="tech-tag">Bootstrap</span>
+                            <span class="tech-tag">SQLite</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="sec-title">Key <span class="grad">Features</span></h2>
+            <p class="sec-sub">Everything needed to manage student academics efficiently</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-3">
+                <div class="feat-card">
+                    <span class="feat-icon">👨‍🎓</span>
+                    <h5>Student Management</h5>
+                    <p>Add and manage complete student profiles with roll numbers and contact details.</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="feat-card">
+                    <span class="feat-icon">📚</span>
+                    <h5>Subject Tracking</h5>
+                    <p>Organize subjects with unique codes and track academic performance per subject.</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="feat-card">
+                    <span class="feat-icon">📊</span>
+                    <h5>Result Reports</h5>
+                    <p>View detailed results with grades, marks and semester-wise breakdown.</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="feat-card">
+                    <span class="feat-icon">🔐</span>
+                    <h5>Admin Panel</h5>
+                    <p>Secure Django admin panel for complete data management and control.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- QUICK ACTIONS -->
+<section class="actions">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="sec-title">Quick <span class="grad">Actions</span></h2>
+            <p class="sec-sub">Get started with common tasks instantly</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-3">
+                <a href="{% url 'add_student' %}" class="act-card">
+                    <span class="act-icon">➕</span>
+                    <h5>Add Student</h5>
+                    <p>Register a new student</p>
+                </a>
+            </div>
+            <div class="col-md-3">
+                <a href="{% url 'student_list' %}" class="act-card">
+                    <span class="act-icon">👥</span>
+                    <h5>All Students</h5>
+                    <p>View all registered students</p>
+                </a>
+            </div>
+            <div class="col-md-3">
+                <a href="{% url 'add_result' %}" class="act-card">
+                    <span class="act-icon">📝</span>
+                    <h5>Add Result</h5>
+                    <p>Enter new exam result</p>
+                </a>
+            </div>
+            <div class="col-md-3">
+                <a href="{% url 'result_list' %}" class="act-card">
+                    <span class="act-icon">📋</span>
+                    <h5>All Results</h5>
+                    <p>View all exam results</p>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="footer">
+    Built with ❤️ by <span class="grad">Muhammad Immad Shahzad</span> &nbsp;|&nbsp; Python & Django &nbsp;|&nbsp; Lahore, Pakistan
+</div>
+
+<script>
+const pc = document.getElementById('particles');
+for(let i = 0; i < 25; i++){
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = Math.random() * 3 + 1;
+    p.style.cssText = `
+        width:${size}px; height:${size}px;
+        left:${Math.random()*100}vw;
+        animation-duration:${Math.random()*12+8}s;
+        animation-delay:${Math.random()*10}s;
+    `;
+    pc.appendChild(p);
+}
+</script>
+
+{% endblock %}
